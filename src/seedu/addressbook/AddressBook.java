@@ -767,7 +767,11 @@ public class AddressBook {
      * @param filePath file for saving
      */
     private static void savePersonsToFile(ArrayList<String[]> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
+        final ArrayList<String> encoded = new ArrayList<>();
+        for (String[] person : persons) {
+            encoded.add(encodePersonToString(person));
+        }
+        final ArrayList<String> linesToWrite = encoded;
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
@@ -893,20 +897,6 @@ public class AddressBook {
     private static String encodePersonToString(String[] person) {
         return String.format(PERSON_STRING_REPRESENTATION,
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    /**
-     * Encodes list of persons into list of decodable and readable string representations.
-     *
-     * @param persons to be encoded
-     * @return encoded strings
-     */
-    private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
-        }
-        return encoded;
     }
 
     /*
