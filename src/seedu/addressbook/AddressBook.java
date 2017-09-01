@@ -531,12 +531,11 @@ public class AddressBook {
      */
     private static String executeEditPerson(String commandArgs) {
 
-        String[] args = commandArgs.split(" ");
-
-        if (!isEditPersonArgsValid(args)) {
+        if (!isEditPersonArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
         }
 
+        String[] args = commandArgs.split(" ");
         String dataName = args[1];
         String newValue = args[2];
 
@@ -547,34 +546,30 @@ public class AddressBook {
 
         final String[] targetPerson = getPersonByLastVisibleIndex(targetVisibleIndex);
         return editPerson(targetPerson, dataName, newValue) ? getMessageForSuccessfulEdit(targetPerson) // success
-                : MESSAGE_EDIT_PERSON_FAILURE; // not found
+                : MESSAGE_EDIT_PERSON_FAILURE; // not found or wrong data format
     }
 
     /**
      * Checks validity of edit argument string's format.
      *
-     * @param args raw command args string for the delete person command
+     * @param commandArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isEditPersonArgsValid(String[] args) {
-        // TODO: Modify other is**Valid methods so that commands taking >1 params takes in String[] instead of String
-        if (args.length != 3) {
+    private static boolean isEditPersonArgsValid(String commandArgs) { 
+        ArrayList<String> args = splitByWhitespace(commandArgs);
+        
+        // Zeroth check: whether params number is correct
+        if (args.size() != 3) {
             return false;
         }
 
-        boolean isIndexValid;
-        // First check: whether index is valid
-        try {
-            final int extractedIndex = extractIntFromString(args[0]); // use standard libraries to parse
-            isIndexValid = extractedIndex >= DISPLAYED_INDEX_OFFSET;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-
+        // First check: whether index is valid integer
+        boolean isIndexValid = isStringValidInt(args.get(0));
+        
         // Second check: whether data name exists
-        boolean isDataNameValid = PERSON_DATA_PREFIXES.containsKey(args[1]);
+        boolean isDataNameValid = PERSON_DATA_PREFIXES.containsKey(args.get(1));
 
-        // Check for validity of 3rd param during editing later
+        // Check for validity of 3rd param during editing later since it's not a formatting issue
         return isIndexValid && isDataNameValid;
     }
 
@@ -602,18 +597,13 @@ public class AddressBook {
     }
 
     /**
-     * Checks validity of delete person argument string's format.
+     * Checks validity of delete argument string's format.
      *
-     * @param rawArgs raw command args string for the delete person command
+     * @param commandArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
-        try {
-            final int extractedIndex = extractIntFromString(rawArgs);
-            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
+    private static boolean isDeletePersonArgsValid(String commandArgs) {
+        return isStringValidInt(commandArgs);
     }
 
     /**
@@ -1289,6 +1279,21 @@ public class AddressBook {
         return s.replace(sign, "");
     }
 
+    /**
+     * Checks whether a given string contains a integer 
+     *
+     * @param rawArgs raw command args string for the delete person command
+     * @return whether the input args string is valid
+     */
+    private static boolean isStringValidInt(String rawArgs) {
+        try {
+            extractIntFromString(rawArgs);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+    
     /**
      * Splits a source string into the list of substrings that were separated by whitespace.
      *
