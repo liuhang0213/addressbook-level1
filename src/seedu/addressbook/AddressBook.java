@@ -138,13 +138,19 @@ public class AddressBook {
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
 
-    private static final String COMMAND_CLEAR_WORD = "clear";
-    private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    private static final String COMMAND_DELETE_ALL_WORD = "deleteall";
+    private static final String COMMAND_DELETE_ALL_DESC = "Deletes all entries from address book permanently.";
+    private static final String COMMAND_DELETE_ALL_EXAMPLE = COMMAND_DELETE_ALL_WORD;
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
     private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+
+    /*
+    private static final String COMMAND_n_WORD = "help";
+    private static final String COMMAND__DESC = "Shows program usage instructions.";
+    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+    */
 
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
@@ -393,8 +399,8 @@ public class AddressBook {
             return executeEditPerson(commandArgs);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
+        case COMMAND_DELETE_ALL_WORD:
+            return executeDeleteAllFromAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -642,8 +648,8 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeClearAddressBook() {
-        clearAddressBook();
+    private static String executeDeleteAllFromAddressBook() {
+        deleteAllFromAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
 
@@ -954,7 +960,7 @@ public class AddressBook {
     /**
      * Clears all persons in the address book and saves changes to file.
      */
-    private static void clearAddressBook() {
+    private static void deleteAllFromAddressBook() {
         ALL_PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
@@ -1233,8 +1239,8 @@ public class AddressBook {
 
     /** Returns string for showing 'clear' command usage instruction */
     private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_ALL_WORD, COMMAND_DELETE_ALL_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_ALL_EXAMPLE) + LS;
     }
 
     /** Returns the string for showing 'view' command usage instruction */
