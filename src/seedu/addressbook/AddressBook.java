@@ -693,16 +693,26 @@ public class AddressBook {
      * Prompts for the command and reads the text entered by the user.
      * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
      *
+     * @param prompt message to show user
      * @return full line entered by the user
      */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
+    private static String getUserInput(String prompt) {
+        System.out.print(LINE_PREFIX + prompt);
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
+    }
+
+    /**
+     * Shows default prompting message 
+     *
+     * @return full line entered by the user
+     */
+    private static String getUserInput() {
+        return getUserInput("Enter command: "); 
     }
 
    /*
