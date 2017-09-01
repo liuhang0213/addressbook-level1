@@ -10,7 +10,8 @@
 ##########################################################
 
   # address book should be emptied
-  clear
+  deleteall 
+  yes
   list
 
 ##########################################################
@@ -115,11 +116,16 @@
   list
 
 ##########################################################
-# test clear command
+# test deleteall command
 ##########################################################
-
-  # clears all
-  clear
+    
+  # does not delete all without confirmation
+  deleteall
+  no
+  list
+  # deletes all
+  deleteall
+  yes
   list
 
 ##########################################################
