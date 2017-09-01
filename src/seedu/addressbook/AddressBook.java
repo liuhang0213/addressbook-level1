@@ -61,6 +61,7 @@ public class AddressBook {
      * at which java String.format(...) method can insert values.
      * =========================================================================
      */
+    private static final String MESSAGE_COMMAND_NOT_EXECUTED = "Command was not executed";
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
@@ -92,6 +93,7 @@ public class AddressBook {
 
     // These are the prefix strings to define the data type of a command parameter
     private static final Map<String, String> PERSON_DATA_PREFIXES = createPrefixesHash();
+
     private static Map<String, String> createPrefixesHash()
     {
         Map<String,String> m = new HashMap<>();
@@ -649,8 +651,14 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeDeleteAllFromAddressBook() {
-        deleteAllFromAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
+        showToUser("WARNING: This action is irreversible.");
+        String re = getUserInput("Confirm deleting all entries from address book (yes/no): ");
+        if (Objects.equals(re.toUpperCase().trim(), "YES")){
+            deleteAllFromAddressBook();
+            return MESSAGE_ADDRESSBOOK_CLEARED;
+        } else {
+            return MESSAGE_COMMAND_NOT_EXECUTED;
+        }
     }
 
     /**
