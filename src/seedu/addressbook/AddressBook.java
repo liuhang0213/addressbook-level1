@@ -122,7 +122,7 @@ public class AddressBook {
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
     private static final String COMMAND_SORT_WORD = "sort";
-    private static final String COMMAND_SORT_DESC = "Displays all persons as a list with index numbers, sorted by name in" +
+    private static final String COMMAND_SORT_DESC = "Displays all persons as a list with index numbers, sorted by name in " +
             "alphabetical order.";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
