@@ -61,6 +61,7 @@ public class AddressBook {
      * at which java String.format(...) method can insert values.
      * =========================================================================
      */
+    private static final String MESSAGE_COMMAND_NOT_EXECUTED = "Command was not executed";
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
@@ -92,6 +93,7 @@ public class AddressBook {
 
     // These are the prefix strings to define the data type of a command parameter
     private static final Map<String, String> PERSON_DATA_PREFIXES = createPrefixesHash();
+
     private static Map<String, String> createPrefixesHash()
     {
         Map<String,String> m = new HashMap<>();
@@ -138,13 +140,19 @@ public class AddressBook {
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
 
-    private static final String COMMAND_CLEAR_WORD = "clear";
-    private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    private static final String COMMAND_DELETE_ALL_WORD = "deleteall";
+    private static final String COMMAND_DELETE_ALL_DESC = "Deletes all entries from address book permanently.";
+    private static final String COMMAND_DELETE_ALL_EXAMPLE = COMMAND_DELETE_ALL_WORD;
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
     private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+
+    /*
+    private static final String COMMAND_n_WORD = "help";
+    private static final String COMMAND__DESC = "Shows program usage instructions.";
+    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+    */
 
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
@@ -393,8 +401,8 @@ public class AddressBook {
             return executeEditPerson(commandArgs);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
+        case COMMAND_DELETE_ALL_WORD:
+            return executeDeleteAllFromAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -531,12 +539,11 @@ public class AddressBook {
      */
     private static String executeEditPerson(String commandArgs) {
 
-        String[] args = commandArgs.split(" ");
-
-        if (!isEditPersonArgsValid(args)) {
+        if (!isEditPersonArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
         }
 
+        String[] args = commandArgs.split(" ");
         String dataName = args[1];
         String newValue = args[2];
 
@@ -547,34 +554,30 @@ public class AddressBook {
 
         final String[] targetPerson = getPersonByLastVisibleIndex(targetVisibleIndex);
         return editPerson(targetPerson, dataName, newValue) ? getMessageForSuccessfulEdit(targetPerson) // success
-                : MESSAGE_EDIT_PERSON_FAILURE; // not found
+                : MESSAGE_EDIT_PERSON_FAILURE; // not found or wrong data format
     }
 
     /**
      * Checks validity of edit argument string's format.
      *
-     * @param args raw command args string for the delete person command
+     * @param commandArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isEditPersonArgsValid(String[] args) {
-        // TODO: Modify other is**Valid methods so that commands taking >1 params takes in String[] instead of String
-        if (args.length != 3) {
+    private static boolean isEditPersonArgsValid(String commandArgs) { 
+        ArrayList<String> args = splitByWhitespace(commandArgs);
+        
+        // Zeroth check: whether params number is correct
+        if (args.size() != 3) {
             return false;
         }
 
-        boolean isIndexValid;
-        // First check: whether index is valid
-        try {
-            final int extractedIndex = extractIntFromString(args[0]); // use standard libraries to parse
-            isIndexValid = extractedIndex >= DISPLAYED_INDEX_OFFSET;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-
+        // First check: whether index is valid integer
+        boolean isIndexValid = isStringValidInt(args.get(0));
+        
         // Second check: whether data name exists
-        boolean isDataNameValid = PERSON_DATA_PREFIXES.containsKey(args[1]);
+        boolean isDataNameValid = PERSON_DATA_PREFIXES.containsKey(args.get(1));
 
-        // Check for validity of 3rd param during editing later
+        // Check for validity of 3rd param during editing later since it's not a formatting issue
         return isIndexValid && isDataNameValid;
     }
 
@@ -602,18 +605,13 @@ public class AddressBook {
     }
 
     /**
-     * Checks validity of delete person argument string's format.
+     * Checks validity of delete argument string's format.
      *
-     * @param rawArgs raw command args string for the delete person command
+     * @param commandArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
-        try {
-            final int extractedIndex = extractIntFromString(rawArgs);
-            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
+    private static boolean isDeletePersonArgsValid(String commandArgs) {
+        return isStringValidInt(commandArgs);
     }
 
     /**
@@ -652,9 +650,15 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeClearAddressBook() {
-        clearAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
+    private static String executeDeleteAllFromAddressBook() {
+        showToUser("WARNING: This action is irreversible.");
+        String re = getUserInput("Confirm deleting all entries from address book (yes/no): ");
+        if (Objects.equals(re.toUpperCase().trim(), "YES")){
+            deleteAllFromAddressBook();
+            return MESSAGE_ADDRESSBOOK_CLEARED;
+        } else {
+            return MESSAGE_COMMAND_NOT_EXECUTED;
+        }
     }
 
     /**
@@ -697,16 +701,26 @@ public class AddressBook {
      * Prompts for the command and reads the text entered by the user.
      * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
      *
+     * @param prompt message to show user
      * @return full line entered by the user
      */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
+    private static String getUserInput(String prompt) {
+        System.out.print(LINE_PREFIX + prompt);
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
+    }
+
+    /**
+     * Shows default prompting message 
+     *
+     * @return full line entered by the user
+     */
+    private static String getUserInput() {
+        return getUserInput("Enter command: "); 
     }
 
    /*
@@ -964,7 +978,7 @@ public class AddressBook {
     /**
      * Clears all persons in the address book and saves changes to file.
      */
-    private static void clearAddressBook() {
+    private static void deleteAllFromAddressBook() {
         ALL_PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
@@ -1243,8 +1257,8 @@ public class AddressBook {
 
     /** Returns string for showing 'clear' command usage instruction */
     private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_ALL_WORD, COMMAND_DELETE_ALL_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_ALL_EXAMPLE) + LS;
     }
 
     /** Returns the string for showing 'view' command usage instruction */
@@ -1279,16 +1293,20 @@ public class AddressBook {
      */
 
     /**
-     * Removes sign(p/, d/, etc) from parameter string
+     * Checks whether a given string contains a integer 
      *
-     * @param s  Parameter as a string
-     * @param sign  Parameter sign to be removed
-     * @return  string without the sign
+     * @param rawArgs raw command args string for the delete person command
+     * @return whether the input args string is valid
      */
-    private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+    private static boolean isStringValidInt(String rawArgs) {
+        try {
+            extractIntFromString(rawArgs);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
-
+    
     /**
      * Splits a source string into the list of substrings that were separated by whitespace.
      *

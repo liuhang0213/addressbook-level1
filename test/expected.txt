@@ -239,18 +239,10 @@
 || 
 || ===================================================
 || Enter command: || [Command entered:  edit -1 phone 12344321]
-|| Invalid command format: edit 
-|| edit: Edits a person identified by the index number used in the last find/list call.
-|| 	Parameters: INDEX DATA_NAME NEW_VALUE
-|| 	Example: edit 1 phone 1231234
-|| 
+|| The person index provided is invalid
 || ===================================================
 || Enter command: || [Command entered:  edit 0 phone 12344321]
-|| Invalid command format: edit 
-|| edit: Edits a person identified by the index number used in the last find/list call.
-|| 	Parameters: INDEX DATA_NAME NEW_VALUE
-|| 	Example: edit 1 phone 1231234
-|| 
+|| The person index provided is invalid
 || ===================================================
 || Enter command: || [Command entered:  edit 3 phone 12344321]
 || The person index provided is invalid
@@ -294,18 +286,10 @@
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete -1]
-|| Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
-|| 	Parameters: INDEX
-|| 	Example: delete 1
-|| 
+|| The person index provided is invalid
 || ===================================================
 || Enter command: || [Command entered:  delete 0]
-|| Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
-|| 	Parameters: INDEX
-|| 	Example: delete 1
-|| 
+|| The person index provided is invalid
 || ===================================================
 || Enter command: || [Command entered:  delete 6]
 || The person index provided is invalid
