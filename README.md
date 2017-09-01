@@ -16,19 +16,19 @@
     * [Design](#design)
     * [Testing](#testing)
 * [**Learning Outcomes**](#learning-outcomes)
-    1. [Set up a project in an IDE [`LO-IdeSetup`]](#set-up-a-project-in-an-ide-lo-idesetup)
-    2. [Navigate code efficiently [`LO-CodeNavigation`]](#navigate-code-efficiently-lo-codenavigation)
+    1. ~~[Set up a project in an IDE [`LO-IdeSetup`]](#set-up-a-project-in-an-ide-lo-idesetup)~~
+    2. ~~[Navigate code efficiently [`LO-CodeNavigation`]](#navigate-code-efficiently-lo-codenavigation)~~
     3. [Use a debugger [`LO-Debugging`]](#use-a-debugger-lo-debugging)
     4. [Automate CLI testing [`LO-AutomatedCliTesting`]](#automate-cli-testing-lo-automatedclitesting)
-    5. [Use Collections [`LO-Collections`]](#use-collections-lo-collections)
-    6. [Use Enums [`LO-Enums`]](#use-enums-lo-enums)
-    7. [Use Varargs [`LO-Varargs`]](#use-varargs-lo-varargs)
-    8. [Follow a coding standard [`LO-CodingStandard`]](#follow-a-coding-standard-lo-codingstandard)
-    9. [Apply coding best practices [`LO-CodingBestPractices`]](#apply-coding-best-practices-lo-codingbestpractices)
+    5. ~~[Use Collections [`LO-Collections`]](#use-collections-lo-collections)~~
+    6. ~~[Use Enums [`LO-Enums`]](#use-enums-lo-enums)~~
+    7. ~~[Use Varargs [`LO-Varargs`]](#use-varargs-lo-varargs)~~
+    8. ~~[Follow a coding standard [`LO-CodingStandard`]](#follow-a-coding-standard-lo-codingstandard)~~
+    9. ~~[Apply coding best practices [`LO-CodingBestPractices`]](#apply-coding-best-practices-lo-codingbestpractices)~~
     10. [Refactor code [`LO-Refactor`]](#refactor-code-lo-refactor)
     11. [Abstract methods well [`LO-MethodAbstraction`]](#abstract-methods-well-lo-methodabstraction)
-    12. [Follow SLAP [`LO-SLAP`]](#follow-slap-lo-slap)
-    13. [Work in a 1kLoC code base [`LO-1KLoC`]](#work-in-a-1kloc-code-baselo-1kloc)
+    12. ~~[Follow SLAP [`LO-SLAP`]](#follow-slap-lo-slap)~~
+    13. ~~[Work in a 1kLoC code base [`LO-1KLoC`]](#work-in-a-1kloc-code-baselo-1kloc)~~
 * [**Contributors**](#contributors)
 * [**Contact Us**](#contact-us)
 
